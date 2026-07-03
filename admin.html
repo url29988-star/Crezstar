@@ -9,7 +9,6 @@
 </head>
 <body class="bg-[#0A0A0F] text-white font-[Poppins] min-h-screen p-4">
   
-  <!-- Login -->
   <div id="loginDiv" class="max-w-md mx-auto mt-20 p-8 bg-[#111118]/40 backdrop-blur-xl rounded-2xl border border-white/10">
     <h1 class="text-2xl font-bold mb-6 text-center">CREZSTAR Admin</h1>
     <input id="email" type="email" placeholder="Email" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
@@ -18,30 +17,27 @@
     <p id="loginError" class="text-red-400 text-sm mt-4 text-center"></p>
   </div>
 
-  <!-- Admin Panel -->
   <div id="adminDiv" class="hidden max-w-4xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold">Site Control Panel</h1>
       <button id="logoutBtn" class="text-sm text-gray-400 hover:text-purple-400">Logout</button>
     </div>
 
-    <!-- Tabs -->
     <div class="flex gap-4 mb-8 border-b border-white/10">
       <button class="tabBtn px-4 py-2 border-b-2 border-purple-500 text-purple-400" data-tab="site">Site Content</button>
       <button class="tabBtn px-4 py-2 text-gray-400" data-tab="works">Add Creation</button>
     </div>
 
-    <!-- Site Content Tab -->
     <div id="siteTab" class="tabContent space-y-6 bg-[#111118]/40 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
       <h2 class="text-xl font-bold mb-4">Logo & Branding</h2>
-      <input id="navName" type="text" placeholder="Site Name (e.g. CREZSTAR)" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+      <input id="navName" type="text" placeholder="Site Name" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
       <input id="logoUrl" type="url" placeholder="Logo Image URL" class="w-full mb-6 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
       
       <h2 class="text-xl font-bold mb-4">Hero Section</h2>
       <input id="heroName" type="text" placeholder="Hero Name" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
-      <input id="heroTitle" type="text" placeholder="Hero Title (e.g. DESIGNER. SCRIPTER. WRITER.)" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+      <input id="heroTitle" type="text" placeholder="Hero Title" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
       <textarea id="heroDesc" placeholder="Hero Description" rows="3" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10"></textarea>
-      <input id="heroImageUrl" type="url" placeholder="Your Photo URL (hero image)" class="w-full mb-6 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+      <input id="heroImageUrl" type="url" placeholder="Your Photo URL" class="w-full mb-6 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
       
       <h2 class="text-xl font-bold mb-4">About Section</h2>
       <input id="aboutTitle" type="text" placeholder="About Title" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
@@ -56,7 +52,6 @@
       <p id="siteStatus" class="text-green-400 text-sm mt-4 text-center"></p>
     </div>
 
-    <!-- Add Work Tab -->
     <div id="worksTab" class="tabContent hidden space-y-6 bg-[#111118]/40 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
       <h2 class="text-xl font-bold mb-4">Add New Creation</h2>
       <input id="workTitle" type="text" placeholder="Title" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10">
@@ -81,7 +76,6 @@
   const loginDiv = document.getElementById('loginDiv');
   const adminDiv = document.getElementById('adminDiv');
   
-  // Auth
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       loginDiv.classList.add('hidden');
@@ -105,7 +99,6 @@
 
   document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-  // Tabs
   document.querySelectorAll('.tabBtn').forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll('.tabBtn').forEach(b => b.className = 'tabBtn px-4 py-2 text-gray-400');
@@ -115,27 +108,18 @@
     };
   });
 
-  // Load current content into form
   async function loadCurrentContent() {
     const contentRef = doc(db, "site", "content");
     const contentSnap = await getDoc(contentRef);
     if (contentSnap.exists()) {
       const data = contentSnap.data();
-      document.getElementById('navName').value = data.navName || '';
-      document.getElementById('logoUrl').value = data.logoUrl || '';
-      document.getElementById('heroName').value = data.heroName || '';
-      document.getElementById('heroTitle').value = data.heroTitle || '';
-      document.getElementById('heroDesc').value = data.heroDesc || '';
-      document.getElementById('heroImageUrl').value = data.heroImageUrl || '';
-      document.getElementById('aboutTitle').value = data.aboutTitle || '';
-      document.getElementById('aboutDesc').value = data.aboutDesc || '';
-      document.getElementById('contactEmail').value = data.contactEmail || '';
-      document.getElementById('contactDesc').value = data.contactDesc || '';
-      document.getElementById('footerText').value = data.footerText || '';
+      Object.keys(data).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.value = data[key] || '';
+      });
     }
   }
 
-  // Save site content
   document.getElementById('saveSiteBtn').onclick = async () => {
     const data = {
       navName: document.getElementById('navName').value,
@@ -158,7 +142,6 @@
     }
   };
 
-  // Add work
   document.getElementById('saveWorkBtn').onclick = async () => {
     const work = {
       title: document.getElementById('workTitle').value,
@@ -167,6 +150,10 @@
       category: document.getElementById('workCategory').value,
       createdAt: serverTimestamp()
     };
+    if (!work.title ||!work.imageUrl) {
+      document.getElementById('workStatus').innerText = "Title and Image URL required";
+      return;
+    }
     try {
       await addDoc(collection(db, "works"), work);
       document.getElementById('workStatus').innerText = "Added!";
