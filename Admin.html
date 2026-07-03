@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CREZSTAR Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#0A0A0F] text-white font-[Poppins] flex items-center justify-center min-h-screen">
+  
+  <div id="loginDiv" class="w-full max-w-md p-8 bg-[#111118]/40 backdrop-blur-xl rounded-2xl border border-white/10">
+    <h1 class="text-2xl font-bold mb-6 text-center">CREZSTAR Admin</h1>
+    <input id="email" type="email" placeholder="Email" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+    <input id="password" type="password" placeholder="Password" class="w-full mb-6 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+    <button id="loginBtn" class="w-full bg-[#8B5CF6] py-3 rounded-xl font-semibold hover:bg-[#7C3AED] transition">Login</button>
+    <p id="loginError" class="text-red-400 text-sm mt-4 text-center"></p>
+  </div>
+
+  <div id="adminDiv" class="hidden w-full max-w-md p-8 bg-[#111118]/40 backdrop-blur-xl rounded-2xl border border-white/10">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Add New Work</h1>
+      <button id="logoutBtn" class="text-sm text-gray-400 hover:text-purple-400">Logout</button>
+    </div>
+    <input id="title" type="text" placeholder="Title" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500">
+    <textarea id="description" placeholder="Description" rows="3" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500"></textarea>
+    <input id="imageUrl" type="url" placeholder="Image URL" class="w-full mb-4 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500">
+    <select id="category" class="w-full mb-6 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white">
+      <option value="design">Design</option>
+      <option value="script">Script</option>
+      <option value="writing">Writing</option>
+    </select>
+    <button id="submitBtn" class="w-full bg-[#8B5CF6] py-3 rounded-xl font-semibold hover:bg-[#7C3AED] transition">Add to CREATIONS</button>
+    <p id="status" class="text-green-400 text-sm mt-4 text-center"></p>
+  </div>
+
+<script type="module">
+  import { db, auth } from './firebase-config.js';
+  import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const loginDiv = document.getElementById('loginDiv');
+  const adminDiv = document.getElementById('adminDiv');
+  
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginDiv.classList.add('hidden');
+      adminDiv.classList.remove('hidden');
+    } else {
+      loginDiv.classList.remove('hidden');
+      adminDiv.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('loginBtn').onclick = async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      document.getElementById('loginError').innerText = '';
+    } catch (error) {
+      document.getElementById('loginError').innerText = "Wrong email or password";
+    }
+  };
+
+  document.getElementById('logoutBtn').onclick = () => signOut(auth);
+
+  document.getElementById('submitBtn').onclick = async () => {
+    const work = {
+      title: document.getElementById('title').value,
+      description: document.getElementById('description').value,
+      imageUrl: document.getElementById('imageUrl').value,
+      category: document.getElementById('category').value,
+      createdAt: serverTimestamp()
+    };
+    
+    if (!work.title ||!work.imageUrl) {
+      document.getElementById('status').innerText = "Title and Image URL required";
+      document.getElementById('status').className = "text-red-400 text-sm mt-4 text-center";
+      return;
+    }
+    
+    try {
+      await addDoc(collection(db, "works"), work);
+      document.getElementById('status').innerText = "Added! Check your live site.";
+      document.getElementById('status').className = "text-green-400 text-sm mt-4 text-center";
+      document.getElementById('title').value = '';
+      document.getElementById('description').value = '';
+      document.getElementById('imageUrl').value = '';
+    } catch (error) {
+      document.getElementById('status').innerText = "Error: " + error.message;
+      document.getElementById('status').className = "text-red-400 text-sm mt-4 text-center";
+    }
+  };
+</script>
+</body>
+</html>

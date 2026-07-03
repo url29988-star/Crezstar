@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CREZSTAR - Designer. Scripter. Writer.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    :root {
+        --bg-primary: #0A0A0F;
+        --purple: #8B5CF6;
+        --purple-glow: rgba(139, 92, 246, 0.3);
+        --text-primary: #FFFFFF;
+        --text-secondary: #9CA3AF;
+        --border-glass: rgba(255, 255, 255, 0.1);
+    }
+    * { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); }
+   .purple-glow { box-shadow: 0 0 20px var(--purple-glow), 0 0 40px var(--purple-glow); }
+   .text-glow { text-shadow: 0 0 20px var(--purple-glow); }
+   .glass-card { background: rgba(17, 17, 24, 0.4); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); transition: all 0.4s ease; }
+   .glass-card:hover { border-color: rgba(139, 92, 246, 0.5); box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15); transform: translateY(-4px); }
+   .btn-primary { background: var(--purple); transition: all 0.3s ease; }
+   .btn-primary:hover { background: #7C3AED; box-shadow: 0 0 25px rgba(139, 92, 246, 0.5); transform: translateY(-2px); }
+   .btn-outline { border: 1px solid var(--border-glass); transition: all 0.3s ease; }
+   .btn-outline:hover { border-color: var(--purple); background: rgba(139, 92, 246, 0.1); }
+   .bg-radial-glow { position: absolute; width: 800px; height: 800px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%); filter: blur(40px); pointer-events: none; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    @keyframes pulse-glow { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+    @keyframes rotate-orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+   .float-animation { animation: float 6s ease-in-out infinite; }
+   .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+   .orbit-ring { animation: rotate-orbit 40s linear infinite; }
+   .orbit-ring-slow { animation: rotate-orbit 60s linear infinite reverse; }
+   .star { animation: twinkle 3s ease-in-out infinite; }
+   .nav-link { position: relative; transition: color 0.3s ease; }
+   .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--purple); transition: width 0.3s ease; }
+   .nav-link:hover::after { width: 100%; }
+   .mobile-menu { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+   .mobile-menu.active { transform: translateX(0); }
+    @media (max-width: 768px) {.bg-radial-glow { width: 400px; height: 400px; } }
+</style>
+</head>
+<body class="antialiased">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="bg-radial-glow top-0 left-1/4"></div>
+        <div class="bg-radial-glow bottom-0 right-1/4"></div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 glass-card border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="#home" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fa-solid fa-star text-purple-500 text-2xl text-glow"></i>
+                    <span>CREZSTAR</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-sm font-medium text-white">SKY</a>
+                    <a href="#about" class="nav-link text-sm font-medium text-gray-400 hover:text-white">✦ STORY</a>
+                    <a href="#gallery" class="nav-link text-sm font-medium text-gray-400 hover:text-white">CREATIONS</a>
+                    <a href="#contact" class="nav-link text-sm font-medium text-gray-400 hover:text-white">Signal</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="#contact" class="hidden sm:block btn-primary px-6 py-2.5 rounded-full text-sm font-semibold">Orbit</a>
+                    <button id="menuToggle" class="md:hidden w-10 h-10 rounded-full glass-card flex items-center justify-center">
+                        <i class="fa-solid fa-bars text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 h-full w-72 bg-[#111118]/95 backdrop-blur-xl z-50 border-l border-white/10">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-12">
+                <span class="text-lg font-bold">Menu</span>
+                <button id="closeMenu" class="w-10 h-10 rounded-full glass-card flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="flex flex-col space-y-6">
+                <a href="#home" class="text-lg font-medium hover:text-purple-400 transition">SKY</a>
+                <a href="#about" class="text-lg font-medium hover:text-purple-400 transition">✦ STORY</a>
+                <a href="#gallery" class="text-lg font-medium hover:text-purple-400 transition">CREATIONS</a>
+                <a href="#contact" class="text-lg font-medium hover:text-purple-400 transition">Signal</a>
+            </div>
+        </div>
+    </div>
+
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 z-10">
+                    <div>
+                        <p class="text-purple-400 text-lg font-medium mb-2">Hello, I'm</p>
+                        <h1 class="text-6xl sm:text-7xl lg:text-8xl font-extrabold mb-3 flex items-center gap-4">
+                            CREZSTAR <i class="fa-solid fa-star text-purple-500 text-5xl lg:text-6xl text-glow"></i>
+                        </h1>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-300 mb-6">DESIGNER. SCRIPTER. WRITER.</h2>
+                        <p class="text-gray-400 text-base sm:text-lg leading-relaxed max-w-lg">
+                            I build experiences that blend creativity, functionality, and meaning. This is where design, code, and words meet.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#gallery" class="btn-primary px-8 py-3.5 rounded-full font-semibold inline-flex items-center gap-2">
+                            Explore My Work <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="#about" class="btn-outline px-8 py-3.5 rounded-full font-semibold">About Me</a>
+                    </div>
+                </div>
+                <div class="relative h-[500px] lg:h-[600px] flex items-center justify-center">
+                    <div class="absolute inset-0">
+                        <div class="star absolute top-[10%] left-[20%] w-1 h-1 bg-white rounded-full"></div>
+                        <div class="star absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full"></div>
+                        <div class="star absolute top-[60%] left-[10%] w-1 h-1 bg-purple-400 rounded-full"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="orbit-ring-slow absolute w-[380px] h-[380px] lg:w-[480px] lg:h-[480px] border border-purple-500/20 rounded-full"></div>
+                        <div class="orbit-ring absolute w-[320px] h-[320px] lg:w-[400px] lg:h-[400px] border border-purple-500/30 rounded-full"></div>
+                    </div>
+                    <div class="absolute pulse-glow">
+                        <div class="w-[200px] h-[200px] lg:w-[280px] lg:h-[280px] rounded-full bg-gradient-to-br from-purple-600 to-purple-900 purple-glow flex items-center justify-center">
+                            <div class="w-[180px] h-[180px] lg:w-[260px] lg:h-[260px] rounded-full bg-gradient-to-tl from-purple-500/50 to-transparent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="relative py-24 lg:py-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <p class="text-purple-400 text-sm font-semibold uppercase tracking-wider mb-3">CREATIONS</p>
+                <h2 class="text-4xl lg:text-5xl font-bold">A Glimpse of My Work</h2>
+            </div>
+            <div id="galleryGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Firebase will load projects here -->
+                <div class="text-gray-500 col-span-full text-center py-12">Loading creations...</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="relative py-24 lg:py-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-3xl p-8 lg:p-16">
+                <p class="text-purple-400 text-sm font-semibold uppercase tracking-wider mb-3">✦ STORY</p>
+                <h2 class="text-4xl lg:text-5xl font-bold mb-6">Passionate Creator with a Vision</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    I'm CREZSTAR, a multi-disciplinary creator bridging design, technology, and storytelling. Every project blends aesthetic sensibility with technical precision.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="relative py-24 lg:py-32">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-purple-400 text-sm font-semibold uppercase tracking-wider mb-3">Signal</p>
+            <h2 class="text-4xl lg:text-5xl font-bold mb-4">Let's Work Together</h2>
+            <p class="text-gray-400 mb-8">Have a project in mind? I'd love to hear about it.</p>
+            <a href="mailto:hello@crezstar.com" class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg inline-block">Send Message</a>
+        </div>
+    </section>
+
+    <footer class="relative border-t border-white/5 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-500 text-sm">© 2024 CREZSTAR. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script type="module">
+  import { db } from './firebase-config.js';
+  import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const closeMenu = document.getElementById('closeMenu');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.onclick = () => mobileMenu.classList.add('active');
+  closeMenu.onclick = () => mobileMenu.classList.remove('active');
+  document.querySelectorAll('#mobileMenu a').forEach(a => a.onclick = () => mobileMenu.classList.remove('active'));
+
+  // Load creations from Firebase
+  async function loadCreations() {
+    const galleryGrid = document.getElementById('galleryGrid');
+    try {
+      const q = query(collection(db, "works"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      galleryGrid.innerHTML = '';
+      
+      if (querySnapshot.empty) {
+        galleryGrid.innerHTML = '<div class="text-gray-500 col-span-full text-center py-12">No creations yet. Add some from admin.</div>';
+        return;
+      }
+      
+      querySnapshot.forEach((doc) => {
+        const work = doc.data();
+        galleryGrid.innerHTML += `
+          <div class="glass-card rounded-2xl overflow-hidden group">
+            <div class="relative h-64 bg-gradient-to-br from-purple-900/20 to-black overflow-hidden">
+              <img src="${work.imageUrl}" class="absolute inset-0 w-full h-full object-cover opacity-60" alt="${work.title}">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+              <div class="absolute top-4 left-4 z-20">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">${work.category.toUpperCase()}</span>
+              </div>
+              <div class="absolute bottom-4 left-4 right-4 z-20">
+                <h3 class="text-xl font-bold mb-2">${work.title}</h3>
+                <p class="text-gray-400 text-sm">${work.description}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    } catch (error) {
+      galleryGrid.innerHTML = '<div class="text-red-400 col-span-full text-center py-12">Error loading creations. Check Firebase config.</div>';
+    }
+  }
+  loadCreations();
+</script>
+</body>
+</html>
